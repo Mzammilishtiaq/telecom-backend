@@ -1,20 +1,10 @@
 const fs = require('fs');
 const multer = require('multer');
-const path = require('path');
 const VerificationPhone = require('../models/verfication_model');
 
-// Configure multer to accept only JSON files and save them to /tmp directory
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, '/tmp');  // Use the writable tmp directory in Vercel
-    },
-    filename: function (req, file, cb) {
-        cb(null, Date.now() + path.extname(file.originalname));  // Unique filenames
-    }
-});
-
-const upload = multer({
-    storage: storage,
+// Configure multer to accept only JSON files
+const upload = multer({ 
+    dest: '/tmp', // Change to /tmp (Vercel allows writing to /tmp)
     fileFilter: (req, file, cb) => {
         if (file.mimetype === 'application/json' || file.originalname.endsWith('.json')) {
             cb(null, true);
@@ -24,7 +14,6 @@ const upload = multer({
     }
 }).single('file');  // Changed field name to 'file' which is more common
 
-// Function to transform data into the required schema
 const transformDataToSchema = (data) => {
     if (typeof data !== 'object' || data === null) {
         throw new Error("Invalid record format: Expected an object.");
@@ -38,7 +27,6 @@ const transformDataToSchema = (data) => {
     };
 };
 
-// Upload file handler
 const UploadFile = async (req, res) => {
     let filePath = null;
     try {
@@ -46,7 +34,7 @@ const UploadFile = async (req, res) => {
             return res.status(400).json({ error: 'No file uploaded' });
         }
 
-        filePath = req.file.path;  // This will be inside the /tmp directory
+        filePath = req.file.path;
         let fileData;
         let jsonData;
 
@@ -56,7 +44,7 @@ const UploadFile = async (req, res) => {
         } catch (err) {
             if (filePath && fs.existsSync(filePath)) {
                 try {
-                    fs.unlinkSync(filePath);  // Clean up the temp file after processing
+                    fs.unlinkSync(filePath);
                 } catch (unlinkErr) {
                     console.error('Error deleting temp file:', unlinkErr);
                 }
@@ -71,7 +59,7 @@ const UploadFile = async (req, res) => {
         if (!Array.isArray(jsonData)) {
             if (filePath && fs.existsSync(filePath)) {
                 try {
-                    fs.unlinkSync(filePath);  // Clean up the temp file after processing
+                    fs.unlinkSync(filePath);
                 } catch (unlinkErr) {
                     console.error('Error deleting temp file:', unlinkErr);
                 }
@@ -85,7 +73,7 @@ const UploadFile = async (req, res) => {
         } catch (transformError) {
             if (filePath && fs.existsSync(filePath)) {
                 try {
-                    fs.unlinkSync(filePath);  // Clean up the temp file after processing
+                    fs.unlinkSync(filePath);
                 } catch (unlinkErr) {
                     console.error('Error deleting temp file:', unlinkErr);
                 }
@@ -96,7 +84,7 @@ const UploadFile = async (req, res) => {
         if (!VerificationPhone) {
             if (filePath && fs.existsSync(filePath)) {
                 try {
-                    fs.unlinkSync(filePath);  // Clean up the temp file after processing
+                    fs.unlinkSync(filePath);
                 } catch (unlinkErr) {
                     console.error('Error deleting temp file:', unlinkErr);
                 }
@@ -113,7 +101,7 @@ const UploadFile = async (req, res) => {
             if (dbError.name === 'MongoBulkWriteError' && dbError.result) {
                 savedCount = dbError.result.nInserted || 0;
             }
-
+            
             return res.status(400).json({
                 error: 'Database operation failed',
                 savedCount: savedCount,
@@ -123,7 +111,7 @@ const UploadFile = async (req, res) => {
 
         if (filePath && fs.existsSync(filePath)) {
             try {
-                fs.unlinkSync(filePath);  // Clean up the temp file after processing
+                fs.unlinkSync(filePath);
             } catch (unlinkErr) {
                 console.error('Error deleting temp file:', unlinkErr);
             }
@@ -138,7 +126,7 @@ const UploadFile = async (req, res) => {
         console.error('Unexpected error:', error);
         if (filePath && fs.existsSync(filePath)) {
             try {
-                fs.unlinkSync(filePath);  // Clean up the temp file after processing
+                fs.unlinkSync(filePath);
             } catch (unlinkErr) {
                 console.error('Error deleting temp file:', unlinkErr);
             }
