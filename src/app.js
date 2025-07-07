@@ -17,7 +17,7 @@ if (process.env.NODE_ENV === 'development') {
 
 // Configure CORS
 // The origin should be an environment variable
-const allowedOrigin = process.env.CORS_ORIGIN || 'https://telecom-frontend-two.vercel.app/';
+const allowedOrigin = process.env.CORS_ORIGIN || 'https://telecom-frontend-two.vercel.app';
 
 app.use(
   cors({
