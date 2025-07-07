@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
-const MONGODB_URI = process.env.MONGODB_URI;
-const MONGODB_ALTAS_URL = process.env.MONGODB_ALTAS_URL;
 
+const MONGODB_URI = process.env.MONGODB_URI;
+const MONGOGB_ALTAS=process.env.MONGODB_ALTAS_URL;
 if (!MONGODB_URI) {
   process.stderr.write('FATAL ERROR: MONGODB_URI environment variable is not set.\n');
   process.exit(1); // Exit if URI is not set
@@ -9,7 +9,7 @@ if (!MONGODB_URI) {
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(MONGODB_ALTAS_URL, {
+    await mongoose.connect(MONGOGB_ALTAS, {
       // Modern Mongoose versions have good defaults,
       // but you can add options here if needed, e.g.:
       // useNewUrlParser: true, // Not needed in Mongoose 6+
