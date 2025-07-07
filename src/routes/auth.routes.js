@@ -237,13 +237,6 @@ authrouter.post('/google/callback', handleGoogleOAuthCallback),
  *     tags: [Roles]
  *     security:
  *       - bearerAuth: []
- *     parameters:
- *       - in: query
- *         name: userId
- *         schema:
- *           type: string
- *         required: false
- *         description: Optional user ID to fetch role for a specific user (admin only)
  *     responses:
  *       200:
  *         description: Role and permissions retrieved successfully
@@ -266,7 +259,6 @@ authrouter.post('/google/callback', handleGoogleOAuthCallback),
  *       401:
  *         description: Unauthorized
  */
-
 
 authrouter.get('/user-role', auth, getCurrentUserRole);
 

@@ -1,10 +1,11 @@
 const express = require('express');
 const paymentrouter = express.Router();
 const {handleStripeWebhook} = require('../controllers/paymentStripe/paymentStripe.controller');
-
+const {handleStripeSubscription} = require('../controllers/paymentStripe/createSubscription.controller');
+const bodyParser = require('body-parser');
 /**
  * @swagger
- * /api/payment/stripe/webhook:
+ * /api/payment/webhook:
  *   post:
  *     summary: Stripe webhook to handle successful payments
  *     tags: [Payment]
@@ -27,6 +28,10 @@ const {handleStripeWebhook} = require('../controllers/paymentStripe/paymentStrip
  *         description: Server error during user upgrade
  */
 
-// paymentrouter.post('/stripe/webhook', express.raw({ type: 'application/json' }), handleStripeWebhook);
+paymentrouter.post('/webhook', bodyParser.raw({ type: 'application/json' }), handleStripeWebhook);
+
+paymentrouter.post('/subscription', handleStripeSubscription);
+
+
 
 module.exports = paymentrouter;
